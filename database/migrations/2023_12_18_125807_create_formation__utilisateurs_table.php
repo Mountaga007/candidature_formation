@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('formation__utilisateurs', function (Blueprint $table) {
             $table->id();
             $table->string('liste_candidature');
+            $table->string('statut_candidature');
             $table->unsignedBigInteger('id_formation');
             $table->unsignedBigInteger('id_user');
             $table->timestamps();
