@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Formation;
 use Illuminate\Http\Request;
 use Exception;
+use PhpParser\Node\Stmt\TryCatch;
 
 class FormationController extends Controller
 {
@@ -56,17 +57,25 @@ class FormationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Formation $formation)
+    public function show(string $formation)
     {
-        if($formation->exists()){
-            return response()->json([
-                'statut'=>1,
-                'formation'=> $formation,
-            ]);
-        }else{
+        
+        try {
+            if($formations=Formation::find($formation)){
+                return response()->json([
+                    'statut'=>1,
+                    'formation'=> $formations,
+                ]);
+            }else{
+                return response()->json([
+                    'statut'=>0,
+                    'message'=>'formation non trouvée',
+                ]);
+            }
+        } catch (\Throwable $th) {
             return response()->json([
                 'statut'=>0,
-                'message'=> 'formation non trouvée',
+                'message'=>'formation non trouvée',
             ]);
         }
     }

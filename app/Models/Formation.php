@@ -12,7 +12,7 @@ class Formation extends Model
     protected $fillable = [
         'nom_formation',
         'dure_formation',
-        'adresse'
+        'adresse',
     ];
 
     public function user()

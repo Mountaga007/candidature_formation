@@ -35,26 +35,26 @@ Route::group([
     Route::post('me', [AuthController::class ,'me']);
 
 });
-//Route::middleware('auth:api')->group(function(){
-    // Route::post('create_formation', [FormationController::class,'store']);
-    // Route::get('existe_formation', [FormationController::class,'show']);
-    // Route::put('modifie_formation/{formation}', [FormationController::class,'update']);
-    // Route::delete('supprimer_formation/{formation}', [FormationController::class,'destroy']);
-    // //Route::post('enregistrer_cabdidature', [FormationUtilisateurController::class, 'store']);
-    // Route::get('liste_cabdidature', [FormationUtilisateurController::class, 'index']);
-    // Route::get('statut_candidature', [FormationUtilisateurController::class, 'update']);
 
- //});
+    //connexion
+    Route::middleware('auth:api', 'MiddlewareAdmin')->group(function(){
+     Route::post('create_formation', [FormationController::class,'store']);
+     Route::get('existe_formation', [FormationController::class,'show']);
+     Route::put('modifie_formation/{formation}', [FormationController::class,'update']);
+     Route::delete('supprimer_formation/{formation}', [FormationController::class,'destroy']);
+     Route::get('liste_cabdidature', [FormationUtilisateurController::class, 'index']);
+     Route::get('statut_candidature', [FormationUtilisateurController::class, 'update']);
+     Route::get('liste_candidat', [UtilisateurController::class, 'liste_candidat']);
+     Route::get('modifi_statut_candidature/{candidature}', [FormationUtilisateurController::class, 'update']);
+        
+ });
 
-Route::get('liste_formation', [FormationController::class, 'index']);
-Route::get('liste_candidat', [UtilisateurController::class, 'liste_candidat']);
-Route::post('create_candidat', [UtilisateurController::class,'store']);
-Route::post('create_formation', [FormationController::class,'store']);
-Route::get('exister_formation', [FormationController::class,'show']);
-Route::put('modifie_formation/{formation}', [FormationController::class,'update']);
-Route::delete('supprimer_formation/{formation}', [FormationController::class,'destroy']);
-Route::post('enregistrer_candidature/{id}', [FormationUtilisateurController::class, 'store']);
-Route::get('liste_cabdidature', [FormationUtilisateurController::class, 'index']);
-Route::get('modifi_statut_candidature/{candidature}', [FormationUtilisateurController::class, 'update']);
-Route::get('liste_candidat_refus', [FormationUtilisateurController::class, 'refuser']);
-Route::get('liste_candidat_accept', [FormationUtilisateurController::class, 'accepter']);
+ Route::middleware('auth:api', 'MiddlewareUser_candidat')->group(function(){
+        Route::post('create_candidat', [UtilisateurController::class,'store']);
+        Route::post('enregistrer_candidature/{id}', [FormationUtilisateurController::class, 'store']);
+        Route::get('liste_candidat_refus', [FormationUtilisateurController::class, 'refuser']);
+        Route::get('liste_candidat_accept', [FormationUtilisateurController::class, 'accepter']);
+ });
+
+ Route::get('liste_formation', [FormationController::class, 'index']);
+ Route::get('exister_formation/{formation}', [FormationController::class,'show']);
