@@ -14,4 +14,10 @@ class Formation extends Model
         'dure_formation',
         'adresse'
     ];
+
+    public function user()
+    {
+        return $this->hasMany(User::class);     
+    }
 }
+

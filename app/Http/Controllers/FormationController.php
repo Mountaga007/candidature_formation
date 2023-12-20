@@ -91,6 +91,7 @@ class FormationController extends Controller
             "dure_formation" => ['required', 'string'],
             "adresse" => ['required', 'string' , 'min:5', 'max:80'],
         ]);
+        
         $formation->nom_formation = $request['nom_formation'];
         $formation->dure_formation = $request['dure_formation'];
         $formation->adresse = $request['adresse'] ;
