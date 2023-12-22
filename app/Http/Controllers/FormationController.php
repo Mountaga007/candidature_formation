@@ -7,11 +7,43 @@ use Illuminate\Http\Request;
 use Exception;
 use PhpParser\Node\Stmt\TryCatch;
 
+use OpenApi\Annotations as OA;
+
+
+/**
+ * @OA\Tag(
+ *     name="Formations",
+ *     description="Endpoints pour la gestion des formations"
+ * )
+ */
+
 class FormationController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Get(
+     *     path="/api/liste_formation",
+     *     tags={"Formations"},
+     *     summary="Liste des formations",
+     *     description="Récupère une liste de toutes les formations.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Opération réussie",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="/components/schemas/Formation")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erreur interne du serveur",
+     *     )
+     * )
      */
+
     public function index()
     {
         try {
@@ -35,7 +67,34 @@ class FormationController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Post(
+     *     path="/api/create_formation",
+     *     tags={"Formations"},
+     *     summary="Créer une nouvelle formation",
+     *     description="Crée une nouvelle formation.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nom_formation", type="string"),
+     *             @OA\Property(property="dure_formation", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Formation créée avec succès",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Formation non créer",
+     *     )
+     * )
      */
+
     public function store(Request $request)
     {
        $formation = new Formation();
@@ -56,7 +115,34 @@ class FormationController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param  string $formation
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Get(
+     *     path="/api/exister_formation/{formation}",
+     *     tags={"Formations"},
+     *     summary="Afficher une formation spécifique",
+     *     description="Affiche les détails d'une formation spécifique.",
+     *     @OA\Parameter(
+     *         name="formation",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la formation",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Opération réussie",
+     *         @OA\JsonContent(ref="/components/schemas/Formation")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Formation non trouvée",
+     *     )
+     * )
      */
+
     public function show(string $formation)
     {
         
@@ -90,7 +176,42 @@ class FormationController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Formation $formation
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Put(
+     *     path="/api/modifie_formation/{formation}",
+     *     tags={"Formations"},
+     *     summary="Mettre à jour une formation",
+     *     description="Met à jour les détails d'une formation spécifique.",
+     *     @OA\Parameter(
+     *         name="formation",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la formation",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nom_formation", type="string"),
+     *             @OA\Property(property="dure_formation", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Formation modifiée avec succès",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Formation non modifiée",
+     *     )
+     * )
      */
+
     public function update(Request $request, Formation $formation)
     {
         if($formation){
@@ -120,7 +241,33 @@ class FormationController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  Formation $formation
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Delete(
+     *     path="/api/supprimer_formation/{formation}",
+     *     tags={"Formations"},
+     *     summary="Supprimer une formation",
+     *     description="Supprime une formation spécifique.",
+     *     @OA\Parameter(
+     *         name="formation",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la formation",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Formation supprimée avec succès",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Formation non supprimée",
+     *     )
+     * )
      */
+
     public function destroy(Formation $formation)
     {
         if($formation){

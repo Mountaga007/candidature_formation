@@ -7,10 +7,32 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
 
+use OpenApi\Annotations as OA;
+
 class UtilisateurController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/liste_candidat",
+     *     summary="Obtenir la liste de tous les candidats",
+     *     tags={"Candidats"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="code_valide", type="integer", example=200),
+     *             @OA\Property(property="message", type="string", example="La liste des candidats a été bien enregistrée."),
+     *             @OA\Property(property="liste des candidats", type="array", @OA\Items(ref="#/components/schemas/User"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="La liste des candidats est indisponible",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Erreur interne du serveur")
+     *         )
+     *     )
+     * )
      */
     public function liste_candidat()
     {
@@ -18,7 +40,7 @@ class UtilisateurController extends Controller
             return response()->json([
             'code_valide' => 200,
             'message' => 'La Liste de toutes les candidats ont été bien enregistrer.',
-            'liste des candidats' => User:: all()
+            'liste des candidats' => User:: all() -> where('role', 'candidat')
             ]);
             } catch (Exception $e) {
             return response() -> json($e);
@@ -34,7 +56,37 @@ class UtilisateurController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/create_candidat",
+     *     summary="Enregistrer un nouveau candidat",
+     *     tags={"Candidats"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Données du candidat à enregistrer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nom", type="string"),
+     *             @OA\Property(property="prenom", type="string"),
+     *             @OA\Property(property="adresse", type="string"),
+     *             @OA\Property(property="telephone", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Candidat enregistré avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Candidat enregistré avec succès")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Candidat non enregistré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Erreur interne du serveur")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request)
     {

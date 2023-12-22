@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use OpenApi\Annotations as OA;
 
 use Illuminate\Http\Request;
 
@@ -20,7 +20,36 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT via given credentials.
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     summary="Obtenir un JWT via les informations d'identification",
+     *     tags={"Authentification"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Informations d'identification de l'utilisateur",
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Succès de la connexion",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string", example="Bearer"),
+     *             @OA\Property(property="expires_in", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Échec de la connexion",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -35,8 +64,27 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    /**
-     * Get the authenticated User.
+/**
+     * @OA\POST(
+     *     path="/api/auth/me",
+     *     summary="Obtenir l'utilisateur authentifié",
+     *     tags={"Authentification"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -45,8 +93,28 @@ class AuthController extends Controller
         return response()->json(auth()->user());
     }
 
+
     /**
-     * Log the user out (Invalidate the token).
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     summary="Déconnectez l'utilisateur (Invalidez le token)",
+     *     tags={"Authentification"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Succès de la déconnexion",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -57,11 +125,34 @@ class AuthController extends Controller
         return response()->json(['message' => 'Déconnexion réussie']);
     }
 
+
     /**
-     * Refresh a token.
+     * @OA\Post(
+     *     path="/api/auth/refresh",
+     *     summary="Actualise un jeton",
+     *     tags={"Authentification"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Succès de l'actualisation du jeton",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string", example="Bearer"),
+     *             @OA\Property(property="expires_in", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());

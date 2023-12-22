@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('formation__utilisateurs', function (Blueprint $table) {
             $table->id();
-            $table->enum('statut_candidature', ['En cour', '
-            ', 'Refuser'])->default('En cour');
+            $table->enum('statut_candidature', ['En cour', 'Accepter', 'Refuser'])->default('En cour');
             $table->unsignedBigInteger('id_formation');
             $table->unsignedBigInteger('id_user');
             $table->timestamps();
